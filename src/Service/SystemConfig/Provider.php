@@ -7,7 +7,6 @@ use Illuminate\Support\ServiceProvider;
 class Provider extends ServiceProvider
 {
 
-
 	public function boot()
 	{
 		$this->migrate();
