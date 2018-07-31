@@ -62,7 +62,7 @@ class Core
 	/**
 	 * get the key of category (获取Category列表)
 	 * */
-	static function listCategoryKey ()
+	public function listCategoryKey ()
 	{
 		return array_keys(self::$dat);
 	}
@@ -73,7 +73,7 @@ class Core
 	 * get the all the param in group of the given category (以数据组的形式返回分类下的所有参数值)
 	 * @param $category string
 	 * */
-	static function getCategory ($category)
+	public function getCategory ($category)
 	{
 		if (!self::is_category_valid($category)) return;
 
@@ -103,7 +103,7 @@ class Core
 	 * @param $group string, group
 	 * @param $param array, key=>val type, the key is the field "param". # 键值对的形式，其中键对应param字段.
 	 * */
-	public static function save ($category, $group, array $param)
+	public function save ($category, $group, array $param)
 	{
 		if (!$param) return;
 
@@ -152,7 +152,7 @@ class Core
 	 * get the param value from cache (从缓存中获取参数)
 	 * @param $param string. chain style with "." # 用"."符号作为链式调用分隔符
 	 * */
-	static function getCache ($param)
+	public function getCache ($param)
 	{
 
 		list($category, $group, $param) = explode('.', $param);
