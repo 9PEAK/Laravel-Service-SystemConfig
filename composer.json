@@ -1,0 +1,24 @@
+{
+    "name": "9peak/laravel-service-systemConfig",
+    "description": "Laravel service ",
+    "license": "MIT",
+    "keywords": ["9peak", "php", "laravel"],
+    "authors": [
+        {
+            "name": "Kane Young / 杨祥凯",
+            "email": "52653784@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">= 5.3",
+        "jdavidbakr/replaceable-model": "^1.0"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "Peak\\": "src"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": false
+}
