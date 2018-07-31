@@ -24,4 +24,13 @@ class Provider extends ServiceProvider
 	}
 
 
+	public function register()
+	{
+		$this->app->bind('Peak\Service\SystemConfig\Core', function(){
+			return new \Peak\Service\SystemConfig\Core();
+		});
+	}
+
+
+
 }
