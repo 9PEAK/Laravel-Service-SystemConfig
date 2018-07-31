@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\System;
+namespace Peak\Service\SystemConfig;
 
 class Model extends \Illuminate\Database\Eloquent\Model
 {

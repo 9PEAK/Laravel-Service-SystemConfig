@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\System;
+namespace Peak\Service\SystemConfig;
 
 use Illuminate\Support\Facades\Cache;
 
