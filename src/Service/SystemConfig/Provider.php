@@ -17,7 +17,7 @@ class Provider extends ServiceProvider
 		// 创建config文件
 		$this->publishes(
 			[
-				__DIR__.'/public/config.php' => config_path('system.php'),
+				__DIR__.'/publish/config.php' => config_path('system.php'),
 			],
 			'config'
 		);
