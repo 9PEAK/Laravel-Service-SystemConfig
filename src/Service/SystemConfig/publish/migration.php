@@ -14,7 +14,7 @@ class CreateTableSystem extends Migration
      */
     public function up()
     {
-    	DB::statement('CREATE TABLE IF NOT EXISTS `system` (
+    	DB::statement('CREATE TABLE IF NOT EXISTS `9peak_system` (
   `category` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `group` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `param` varchar(96) COLLATE utf8mb4_unicode_ci NOT NULL,

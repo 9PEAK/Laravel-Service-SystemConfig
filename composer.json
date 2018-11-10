@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "php": ">= 5.3",
-        "jdavidbakr/replaceable-model": "^1.0"
+        "php": ">= 5.3"
     },
     "require-dev": {},
     "autoload": {

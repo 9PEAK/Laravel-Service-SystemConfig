@@ -9,17 +9,20 @@ class Core
 
 	private static $dat;
 	private static $key;
-	private static $exp;
 
-	function __construct($config=null, $expHour=24)
+	/**
+	 * initiate 初始化
+	 * */
+	static function init ($file='system')
 	{
-		self::$key = $config ?: 'system';
-		self::$exp = (int)$expHour;
-		self::$dat || self::$dat=config(self::$key);
+		self::$key = $file;
+		self::$dat = config(self::$key.'.dat');
 	}
 
 
+
 	/**
+	 * 分类、分组、参数是否合法存在
 	 * test if the category, group, param valid
 	 * */
 
@@ -60,40 +63,31 @@ class Core
 
 
 	/**
-	 * get the key of category (获取Category列表)
+	 * category list or param list in group of the given category (分类列表，或指定分类的参数列表)
+	 * @param category string|null  return category list when category is null, otherwise return array dat
+	 *
 	 * */
-	public function listCategoryKey ()
+	public function ls ($category=null)
 	{
+		if ($category) {
+			if (!is_string($category)||!self::is_category_valid($category)) return;
+
+			$dat =& self::$dat[$category];
+
+			$qry = self::get_from_db($category, array_keys($dat));
+
+			foreach ($qry as &$row) {
+				if (self::is_param_valid($row['category'], $row['group'], $row['param'])) {
+					$dat[$row['group']][$row['param']]['val'] = $row['val'];
+				}
+			}
+
+			return $dat;
+		}
+
 		return array_keys(self::$dat);
 	}
 
-
-
-	/**
-	 * get the all the param in group of the given category (以数据组的形式返回分类下的所有参数值)
-	 * @param $category string
-	 * */
-	public function getCategory ($category)
-	{
-		if (!self::is_category_valid($category)) return;
-
-		$dat =& self::$dat[$category];
-
-		$qry = self::get_from_db($category, array_keys($dat));
-
-		foreach ($qry as &$row) {
-			if (self::is_param_valid($row['category'], $row['group'], $row['param'])) {
-				$dat[$row['group']][$row['param']]['val'] = $row['val'];
-//				$dat[$row['group']][$row['param']]['key'] = $row['param'];
-			}
-		}
-/*
-		foreach ($dat as &$group) {
-			$group = array_values($group);
-		}*/
-
-		return $dat;
-	}
 
 
 
@@ -109,8 +103,7 @@ class Core
 
 		foreach ($param as $key=>&$val) {
 
-			Cache::forget(self::set_cache_key($category, $group, $key));
-
+			Cache::forget(self::cache_key($category, $group, $key));
 			$val = [
 				'category' => $category,
 				'group' => $group,
@@ -124,7 +117,7 @@ class Core
 				'category' => $category,
 				'group' => $group,
 			])->delete();
-			Model::replace($param);
+			Model::insert($param);
 		});
 
 	}
@@ -136,10 +129,10 @@ class Core
 	/**
 	 * set the cache name
 	 * */
-	private static function set_cache_key ($category, $group, $param)
+	private static function cache_key ($category, $group, $param)
 	{
 		return join('.', [
-			self::$key,
+			config(self::$key.'.key'),
 			$category,
 			$group,
 			$param,
@@ -150,16 +143,16 @@ class Core
 
 	/**
 	 * get the param value from cache (从缓存中获取参数)
-	 * @param $param string. chain style with "." # 用"."符号作为链式调用分隔符
+	 * @param $param string. string is chain style with "."  ### 用"."符号作为链式调用分隔符
 	 * */
-	public function getCache ($param)
+	public function get ($param)
 	{
 
-		list($category, $group, $param) = explode('.', $param);
+		list($category, $group, $param) = is_array($param) ? $param :explode('.', $param);
 		if (self::is_param_valid($category, $group, $param) ) {
 			return Cache::remember (
-				self::set_cache_key($category, $group, $param),
-				self::$exp,
+				self::cache_key($category, $group, $param),
+				config(self::$key.'.exp'),
 				function () use ($category, $group, $param) {
 					$dat = self::get_from_db($category, $group, $param);
 					if ($dat) {
