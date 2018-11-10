@@ -22,8 +22,7 @@ class Provider extends ServiceProvider
 			'config'
 		);
 
-
-
+		Core::init();
 
 	}
 

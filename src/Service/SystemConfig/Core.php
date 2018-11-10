@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Cache;
 class Core
 {
 
-	private static $dat;
 	private static $key;
 
 	/**
@@ -16,9 +15,17 @@ class Core
 	static function init ($file='system')
 	{
 		self::$key = $file;
-		self::$dat = config(self::$key.'.dat');
+		return static::class;
 	}
 
+
+	/**
+	 * 获取配置数据
+	 * */
+	private static function dat()
+	{
+		return config(self::$key.'.dat');
+	}
 
 
 	/**
@@ -27,15 +34,15 @@ class Core
 	 * */
 
 	private static function is_category_valid ($category) {
-		return $category && array_key_exists($category, self::$dat);
+		return $category && array_key_exists($category, self::dat());
 	}
 
 	private static function is_group_valid ($category, $group) {
-		return self::is_category_valid($category) && $group && array_key_exists($group, self::$dat[$category]);
+		return self::is_category_valid($category) && $group && array_key_exists($group, self::dat()[$category]);
 	}
 
 	private static function is_param_valid ($category, $group, $param) {
-		return self::is_group_valid($category, $group) && $param && array_key_exists($param, self::$dat[$category][$group]);
+		return self::is_group_valid($category, $group) && $param && array_key_exists($param, self::dat()[$category][$group]);
 	}
 
 
@@ -72,9 +79,9 @@ class Core
 		if ($category) {
 			if (!is_string($category)||!self::is_category_valid($category)) return;
 
-			$dat =& self::$dat[$category];
+			$dat = self::dat()[$category];
 
-			$qry = self::get_from_db($category, array_keys($dat));
+			$qry = self::get_from_db($category, array_keys(self::dat()));
 
 			foreach ($qry as &$row) {
 				if (self::is_param_valid($row['category'], $row['group'], $row['param'])) {
@@ -85,7 +92,7 @@ class Core
 			return $dat;
 		}
 
-		return array_keys(self::$dat);
+		return array_keys(self::dat());
 	}
 
 
